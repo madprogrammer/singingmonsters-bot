@@ -1,0 +1,17 @@
+!!! 5
+%html
+  %head
+    %title My Singing Monsters
+    %meta{:content => "width=device-width, initial-scale=1.0", :name => "viewport"}
+    %link{:href => "/vendor/bootstrap/css/bootstrap.min.css", :rel => "stylesheet"}
+  %body
+    .container
+      %nav.navbar.navbar-default{:role => "navigation"}
+        .navbar-header
+          %a.navbar-brand{:href => "/"} My Singing Monsters
+      %div
+        - if @error then
+          .alert.alert-error= @error
+        = yield
+    %script{:src => "/vendor/jquery-1.9.1.min.js"}
+    %script{:src => "/vendor/bootstrap/js/bootstrap.min.js"}

@@ -1,0 +1,65 @@
+.col-md-4
+    %ul.list-group
+        %li.list-group-item
+            %span.badge= state.coins
+            Coins
+        %li.list-group-item
+            %span.badge= state.diamonds
+            Diamonds
+        %li.list-group-item
+            %span.badge= state.food
+            Food
+        %li.list-group-item
+            %span.badge= state.ethereal_currency
+            Ethereal currency
+        %li.list-group-item
+            %span.badge= state.xp
+            Experience (XP)
+        %li.list-group-item
+            %span.badge= state.level
+            Level
+.col-md-12
+    %ul.nav.nav-tabs{:role=> "tablist"}
+        - state.islands.each do |id, island|
+            %li
+                %a{:href => "#island#{island.island}", :role => "rab", "data-toggle" => "tab"}= island.name
+
+    .tab-content
+        - state.islands.each do |id, island|
+            .tab-pane{:id => "island#{island.island}"}
+                %h3= "#{island.name} Island"
+                %h4 Baking
+                %table.table.table-hover.table-condensed
+                    %thead
+                        %th Food count
+                        %th Started at
+                        %th Finishing at
+                    %tbody
+                        - island.baking.each do |id, baking|
+                            %tr
+                                %td= baking.food_count
+                                %td= datetime(baking.started)
+                                %td= datetime(baking.finished)
+                %h4 Monsters
+                %table.table.table-hover.table-condensed
+                    %thead
+                        %th Name
+                        %th Kind
+                        %th ID
+                        %th Level
+                        %th Happiness
+                        %th Last collected
+                    %tbody
+                        - island.monsters.each do |id, monster|
+                            %tr
+                                %td= monster.name
+                                %td= monster.type
+                                %td= id
+                                %td= monster.level
+                                %td
+                                    .progress
+                                        .progress-bar{:role => "progressbar",
+                                        "aria-valuenow" => monster.happiness,
+                                        "aria-valuemin" => 0, "aria-valuemax" => 100,
+                                        :style => "width: #{monster.happiness}%"}
+                                %td= datetime(monster.last_collection)
