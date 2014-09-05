@@ -65,15 +65,18 @@ def collect
             $connection.write(Protocol.getSimpleNamedRequest("gs_change_island", Protocol.getSimpleLongPayload("user_island_id", id)))
             change_resp = $connection.waitfor("gs_change_island")
             fail "Failed to change active island" unless change_resp["p"]["p"]["success"] == 1
+            $state.active_island = id
         end
         puts "Collecting from active island: #{island.name}"
 
         island.baking.each do |id, baking|
             if baking.finished < Time.now.to_i * 1000
                 puts "Baking #{id} finished at #{Util::unixToString(baking.finished)}"
-                baking.finish
-                if $state.coins >= 75000
-                    baking.start(Model::FOOD_ID_PIZZA)
+                sleep rand(1..4)
+                if baking.finish
+                    if $state.coins >= 75000
+                        baking.start(Model::FOOD_ID_PIZZA)
+                    end
                 end
             else
                 puts "Baking #{id} not finished yet. Finish: #{Util::unixToString(baking.finished)}"
