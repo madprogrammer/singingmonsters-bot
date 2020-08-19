@@ -1,7 +1,7 @@
 :email: your@email.com
 :password: game_password
-:oudid: OpenUDID in hex
-:device: device model (e.g. D6503)
-:os: OS version (e.g. 4.4.2)
-:mac: Wi-Fi MAC (e.g. 00:11:22:33:44:55)
-:android_id: Android ID in hex
+:device_id: Android ID in hex
+:device_model: device model (e.g. D6503)
+:device_vendor: Sony
+:os_version: 9
+:lang: en

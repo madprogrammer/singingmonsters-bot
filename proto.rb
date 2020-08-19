@@ -1,5 +1,6 @@
 require 'digest/md5'
 require_relative 'smartfox'
+require_relative 'settings'
 
 class Protocol
     def self.getTicketRequest()
@@ -8,14 +9,21 @@ class Protocol
         SmartFox2X::SFSPacket.build(get_tkt, 0, 0)
     end
 
-    def self.loginRequest(user, password, tk)
-        puts "Login: #{user}, #{password}, #{tk}"
+    def self.loginRequest(auth, tk)
+        puts "Login: #{auth}, #{tk}"
         login = SmartFox2X::SFSObject.new
-        login.merge({"un" => user, "zn" => "MySingingMonsters", "pw" => Digest::MD5.hexdigest(tk + password)})
+        login.merge({"un" => auth["user_game_id"].first, "zn" => "MySingingMonsters", "pw" => ""})
         client_info = SmartFox2X::SFSObject.new
-        client_info.merge({"client_device" => "D6503", "client_os" => "4.4.2",
-            "client_platform" => "android", "client_version" => "1.3.5", "last_update_version" => "1.3.5",
-            "last_updated" => SmartFox2X::Term.build(SmartFox2X::TYPE_LONG, 1441712026000)})
+        client_info.merge({
+          "last_updated" => SmartFox2X::Term.build(SmartFox2X::TYPE_LONG, 0),
+          "raw_device_id" => $settings.device_id,
+          "client_device" => $settings.device_model,
+          "last_update_version" => "",
+          "client_os" => $settings.os_version.to_s,
+          "client_platform" => "android",
+          "client_version" => "2.4.2",
+          "token" => auth["access_token"]
+        })
         login["p"] = client_info
         SmartFox2X::SFSPacket.build(login, 1, 0)
     end

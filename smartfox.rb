@@ -11,6 +11,7 @@ module SmartFox2X
     TYPE_FLOAT  = 6
     TYPE_DOUBLE = 7
     TYPE_STRING = 8
+    TYPE_INT_ARRAY = 12
     TYPE_ARRAY  = 17
     TYPE_OBJECT = 18
 
@@ -39,7 +40,7 @@ module SmartFox2X
 
         def convert
             data.map do |item|
-                case item.type
+                case item.otype
                     when TYPE_OBJECT, TYPE_ARRAY then item.payload.convert
                     when TYPE_BOOL..TYPE_LONG then item.payload.to_i
                     when TYPE_STRING then item.payload.to_s
@@ -48,6 +49,13 @@ module SmartFox2X
                 end
             end
         end
+    end
+
+    class SFSIntArray < BinData::Record
+      endian :big
+      hide :len
+      int16 :len, :value => lambda { data.length }
+      array :data, :type => :int32, :initial_length => :len
     end
 
     class SFSKeyValue < BinData::Record
@@ -104,7 +112,7 @@ module SmartFox2X
         def convert
             hash = Hash.new
             items.each do |item|
-                value = case item.item.type
+                value = case item.item.otype
                     when TYPE_OBJECT, TYPE_ARRAY then item.item.payload.convert
                     when TYPE_BOOL..TYPE_LONG then item.item.payload.to_i
                     when TYPE_STRING then item.item.payload.to_s
@@ -136,9 +144,9 @@ module SmartFox2X
 
     class Term < BinData::Record
         endian :big
-        hide   :type
-        uint8  :type, :initial_value => TYPE_OBJECT
-        choice :payload, :selection => :type do
+        hide   :otype
+        uint8  :otype, :initial_value => TYPE_OBJECT
+        choice :payload, :selection => :otype do
             int8        TYPE_BOOL
             int8        TYPE_BYTE
             int16       TYPE_SHORT
@@ -146,6 +154,7 @@ module SmartFox2X
             int64       TYPE_LONG
             float       TYPE_FLOAT
             double      TYPE_DOUBLE
+            sfs_int_array TYPE_INT_ARRAY
             sfs_string  TYPE_STRING
             sfs_array   TYPE_ARRAY
             sfs_object  TYPE_OBJECT
@@ -153,7 +162,7 @@ module SmartFox2X
 
         def self.build(type, payload)
             term = Term.new
-            term.type = type
+            term.otype = type
             term.payload = payload
             term
         end

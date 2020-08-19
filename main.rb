@@ -18,16 +18,21 @@ def login
         $connection.close
     end
 
-    bbbauth = BBBAuth.login
-    fail "BBBAuth failed" unless bbbauth["ok"]
+    auth = EmailAuth.login
+    puts auth
+    fail "Email & password authentication failed" unless auth["ok"]
 
-    $connection = Connection.new bbbauth["serverIp"]
+    pregame = EmailAuth.pregame_setup auth["access_token"]
+    puts pregame
+    
+    fail "Pregame setup failed" unless pregame["ok"]
+
+    $connection = Connection.new pregame["serverIp"]
     $connection.write(Protocol.getTicketRequest)
     $state.connection = $connection
 
     ticket_response = $connection.read
-    $connection.write(Protocol.loginRequest(bbbauth["bbbId"], bbbauth["sessId"],
-        ticket_response["p"]["tk"]))
+    $connection.write(Protocol.loginRequest(auth, ticket_response["p"]["tk"]))
 
     # skip responses we're not interested in
     init_response = $connection.waitfor("gs_initialized")
@@ -35,20 +40,20 @@ def login
 
     # now we've got to request the DBs to behave
     # more like the real client we're emulating
-    Protocol.getAllDbRequests(1408023723000).each do |request|
+    #Protocol.getAllDbRequests(1408023723000).each do |request|
         # send db request
-        $connection.write(request)
+    #    $connection.write(request)
         # read server response and ignore it
-        $connection.read
-    end
-    puts "DBs requested"
+    #    $connection.read
+    #end
+    #puts "DBs requested"
 
     # Get promos and quests and ignore them
-    $connection.write(Protocol.getSimpleNamedRequest("gs_promos", Protocol.getSimpleLongPayload("last_updated", 0)))
-    2.times { $connection.read }
-    $connection.write(Protocol.getSimpleNamedRequest("gs_quest", Protocol.getSimpleLongPayload("last_updated", 0)))
-    $connection.read
-    puts "Fetched promos and quests"
+    #$connection.write(Protocol.getSimpleNamedRequest("gs_promos", Protocol.getSimpleLongPayload("last_updated", 0)))
+    #2.times { $connection.read }
+    #$connection.write(Protocol.getSimpleNamedRequest("gs_quest", Protocol.getSimpleLongPayload("last_updated", 0)))
+    #$connection.read
+    #puts "Fetched promos and quests"
 
     # Request player object
     $connection.write(Protocol.getSimpleNamedRequest("gs_player", Protocol.getSimpleLongPayload("last_updated", 0)))
