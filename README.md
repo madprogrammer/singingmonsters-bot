@@ -17,15 +17,21 @@ The script is a Ruby client for My Singing Monsters game, and tries to behave li
 
 The client automates routine tasks like periodic collection of coins and food.
 
-Installation
+Installation (tested on Ubuntu 20.04 LTS running in WSL2)
 --------------
 
 ```sh
 git clone https://github.com/madprogrammer/singingmonsters-bot
 cd singingmonsters-bot
+
+sudo apt install ruby ruby-devel ruby-bundler
+bundle install --path vendor/bundle
+cp -i config.yml.example config.yml
 ```
 
-##### Configure settings in config.yml (see example)
+##### Configure settings in config.yml
+
+##### Run the script
 
 ```sh
 bundle exec ruby main.rb
