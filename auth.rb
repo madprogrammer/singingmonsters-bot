@@ -9,7 +9,7 @@ class EmailAuth
     {
       :g => 1,
       :auth_version => "2.0.0",
-      :client_version => "2.4.2",
+      :client_version => "3.0.5",
       :device_id => $settings.device_id,
       :device_model => $settings.device_model,
       :device_vendor => $settings.device_vendor,

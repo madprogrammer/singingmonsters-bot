@@ -21,7 +21,7 @@ class Protocol
           "last_update_version" => "",
           "client_os" => $settings.os_version.to_s,
           "client_platform" => "android",
-          "client_version" => "2.4.2",
+          "client_version" => "3.0.5",
           "token" => auth["access_token"]
         })
         login["p"] = client_info
