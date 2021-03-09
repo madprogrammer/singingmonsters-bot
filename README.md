@@ -24,7 +24,7 @@ Installation (tested on Ubuntu 20.04 LTS running in WSL2)
 git clone https://github.com/madprogrammer/singingmonsters-bot
 cd singingmonsters-bot
 
-sudo apt install ruby ruby-devel ruby-bundler
+sudo apt install ruby ruby-dev ruby-bundler
 bundle install --path vendor/bundle
 cp -i config.yml.example config.yml
 ```
