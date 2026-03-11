@@ -9,7 +9,7 @@ class EmailAuth
     {
       :g => 1,
       :auth_version => "2.0.0",
-      :client_version => "3.0.5",
+      :client_version => "4.5.2",
       :device_id => $settings.device_id,
       :device_model => $settings.device_model,
       :device_vendor => $settings.device_vendor,
@@ -46,7 +46,10 @@ class EmailAuth
   #   "contentUrl": "https:...files.json"
   # }
   def self.pregame_setup(token)
-    post("https://msm-auth.bbbgame.net/pregame_setup.php", :body => common_params, :headers => {
+    params = {
+      :access_key => $settings.access_key
+    }
+    post("https://msm-auth.bbbgame.net/pregame_setup.php", :body => params.merge(common_params), :headers => {
       "Authorization" => token
     })
   end
